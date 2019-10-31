@@ -2,23 +2,29 @@ import pygame as pg
 import sys
 import random
 
-size = width, height = 800, 600
+size = width, height = 500, 500
 border_size = 10
 color = 180, 212, 101
+size_rec = 25
 
-def rand_color():
-    return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
+def rand_color(count):
+    return random.randint(count, 255), random.randint(count, 255), random.randint(count, 255)
 
 def random_position():
-    return random.randint(50, 750), random.randint(50, 550)
+    x, y = (random.randint(2, width // size_rec) - 1) * size_rec, (random.randint(2, height // size_rec) - 1) * size_rec
+    if x >= width - size_rec:
+        x = width - 2 * size_rec
+    if y >= height - size_rec:
+        y = height - 2 * size_rec
+    return x, y
 
 def create_border(game_surface):
     for i in range(height):
-        pg.draw.rect(game_surface, (99, 136, 64), (0, i, 25, 25), 0)
-        pg.draw.rect(game_surface, (99, 136, 64), (width - 25, i, 25, 25), 0)
+        pg.draw.rect(game_surface, (99, 136, 64), (0, i, size_rec, size_rec), 0)
+        pg.draw.rect(game_surface, (99, 136, 64), (width - size_rec, i, size_rec, size_rec), 0)
     for i in range(width):
-        pg.draw.rect(game_surface, (99, 136, 64), (i, 0, 25, 25), 0)
-        pg.draw.rect(game_surface, (99, 136, 64), (i, height - 25, 25, 25), 0)
+        pg.draw.rect(game_surface, (99, 136, 64), (i, 0, size_rec, size_rec), 0)
+        pg.draw.rect(game_surface, (99, 136, 64), (i, height - size_rec, size_rec, size_rec), 0)
 
 class Food(object):
     def __init__(self, x_pos_food = None, y_pos_food = None, food_color = None):
@@ -32,7 +38,7 @@ class Food(object):
             self.x_pos_food, self.y_pos_food = random_position()
 
     def draw_food(self, game_surface):
-        pg.draw.rect(game_surface, self.color, (self.x_pos_food, self.y_pos_food, 25, 25), 0)
+        pg.draw.rect(game_surface, self.color, (self.x_pos_food, self.y_pos_food, size_rec, size_rec), 0)
 
 def main():
     pg.init()
