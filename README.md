@@ -1,2 +1,0 @@
-# Snake
-Project #1
