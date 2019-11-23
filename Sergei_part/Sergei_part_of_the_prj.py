@@ -40,10 +40,6 @@ class Food(object):
             food_color = (215, 54, 48)
         self.x_pos_food, self.y_pos_food, self.color = x_pos_food, y_pos_food, food_color
 
-    def is_eaten(self, x, y):
-        if x == self.x_pos_food and y == self.y_pos_food:
-            self.x_pos_food, self.y_pos_food = random_position()
-
     def draw_food(self, game_surface):
         pg.draw.rect(game_surface, self.color, (self.x_pos_food, self.y_pos_food, size_rec, size_rec), 0)
 
@@ -65,7 +61,7 @@ def startGame(screen):
         pg.time.wait(10)
     sys.exit()
 
-#   For sec button
+#   For button 'About Us'
 
 def about_us(screen):
     pg.display.set_caption('About Us')
@@ -78,15 +74,24 @@ def about_us(screen):
         screen.blit(font.render(data[i], False, border_color), (width // 2 - width // 10, 100 + count))
         count += 70
     pg.display.flip()
+    
+#   Settings button
+
+def settings(screen):
+    pg.display.set_caption('Settings')
+    screen.fill(color)
+    create_border(screen)
+    pg.display.flip()
 
 #   For text on each button
 
-def output_text(screen):
+def output_text_menu(screen):
     font = pg.font.Font('8201.ttf', 23)
-    data_1, data_2, data_3 = 'Snake', 'About Us', 'Quit'
-    screen.blit(font.render(data_1, False, color), (width // 2 - width // 10 + 20, 100))
-    screen.blit(font.render(data_2, False, color), (width // 2 - width // 10 + 5, 170))
-    screen.blit(font.render(data_3, False, color), (width // 2 - width // 10 + 28, 243))
+    data = 'Snake', 'About Us', 'Settings', 'Quit'
+    screen.blit(font.render(data[0], False, color), (width // 2 - width // 10 + 20, 100))
+    screen.blit(font.render(data[1], False, color), (width // 2 - width // 10 + 5, 170))
+    screen.blit(font.render(data[2], False, color), (width // 2 - width // 10 + 15, 243))
+    screen.blit(font.render(data[3], False, color), (width // 2 - width // 10 + 28, 313))
 
 #   Menu
 
@@ -99,12 +104,15 @@ def menu(screen):
     pg.draw.rect(screen, border_color, (width // 2 - width // 10, 90, 100, 50))
 
     #   About us
-    pg.draw.rect(screen, border_color, (width // 2 - 50, 160, 100, 50))
+    pg.draw.rect(screen, border_color, (width // 2 - width // 10, 160, 100, 50))
+
+    #   Settings button
+    pg.draw.rect(screen, border_color, (width // 2 - width // 10, 230, 100, 50))
 
     #   Quit button
-    pg.draw.rect(screen, border_color, (width // 2 - 50, 230, 100, 50))
+    pg.draw.rect(screen, border_color, (width // 2 - 50, 300, 100, 50))
 
-    output_text(screen)
+    output_text_menu(screen)
     pg.display.flip()
     gameover = False
     while not gameover:
@@ -113,15 +121,18 @@ def menu(screen):
             if event.type == pg.QUIT:
                 gameover = True
             if event.type == pg.MOUSEBUTTONDOWN:
+                if pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 300:
+                    if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 370:
+                        gameover = True
                 if pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 230:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 280:
-                            sys.exit()
+                        settings(screen)
                 elif pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 160:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 210:
                         about_us(screen)
                 elif pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 90:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 140:
-                            startGame(screen)
+                        startGame(screen)
 
 def main():
     pg.init()
