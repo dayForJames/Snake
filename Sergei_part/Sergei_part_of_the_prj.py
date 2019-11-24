@@ -67,9 +67,14 @@ def about_us(screen):
     pg.display.set_caption('About Us')
     screen.fill(color)
     create_border(screen)
-    data = ['Developed by:', 'Fellow #1', 'Fellow #2', 'Fellow #3']
+
+    #   Menu button
+    pg.draw.rect(screen, (0, 100, 140), (width - size_rec, 0, size_rec, size_rec))
+
+    data = 'Developed by:', 'Sergei', 'Petr', 'Mark', 'Menu'
     font = pg.font.Font('8201.ttf', 23)
     count = 0
+    screen.blit(font.render(data[4], False, color), (width - size_rec * 3 - width // 100, 0))
     for i in range(4):
         screen.blit(font.render(data[i], False, border_color), (width // 2 - width // 10, 100 + count))
         count += 70
@@ -81,17 +86,25 @@ def settings(screen):
     pg.display.set_caption('Settings')
     screen.fill(color)
     create_border(screen)
+
+    #   Menu button
+    font = pg.font.Font('8201.ttf', 23)
+    data = 'Menu'
+    screen.blit(font.render(data, False, color), (width - size_rec * 3 - width // 100, 0))
+    pg.draw.rect(screen, (0, 100, 140), (width - size_rec, 0, size_rec, size_rec))
+
     pg.display.flip()
 
 #   For text on each button
 
 def output_text_menu(screen):
     font = pg.font.Font('8201.ttf', 23)
-    data = 'Snake', 'About Us', 'Settings', 'Quit'
+    data = 'Snake', 'About Us', 'Settings', 'Quit', 'Menu'
     screen.blit(font.render(data[0], False, color), (width // 2 - width // 10 + 20, 100))
     screen.blit(font.render(data[1], False, color), (width // 2 - width // 10 + 5, 170))
     screen.blit(font.render(data[2], False, color), (width // 2 - width // 10 + 15, 243))
     screen.blit(font.render(data[3], False, color), (width // 2 - width // 10 + 28, 313))
+    screen.blit(font.render(data[4], False, color), (width - size_rec * 3 - width // 100, 0))
 
 #   Menu
 
@@ -99,6 +112,9 @@ def menu(screen):
     pg.display.set_caption('Menu')
     screen.fill(color)
     create_border(screen)
+
+    #   Menu button
+    pg.draw.rect(screen, (0, 100, 140), (width - size_rec, 0, size_rec, size_rec))
 
     #   Start button
     pg.draw.rect(screen, border_color, (width // 2 - width // 10, 90, 100, 50))
@@ -121,18 +137,26 @@ def menu(screen):
             if event.type == pg.QUIT:
                 gameover = True
             if event.type == pg.MOUSEBUTTONDOWN:
+                #   Exit
                 if pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 300:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 370:
-                        gameover = True
-                if pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 230:
+                        sys.exit()
+                #   Settings
+                elif pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 230:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 280:
                         settings(screen)
+                #   Info
                 elif pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 160:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 210:
                         about_us(screen)
+                #   Game
                 elif pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 90:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 140:
                         startGame(screen)
+                #   Back to menu
+                elif pg.mouse.get_pos()[0] >= width - size_rec and pg.mouse.get_pos()[1] >= 0:
+                    if pg.mouse.get_pos()[0] <= width and pg.mouse.get_pos()[1] <= height - size_rec:
+                        menu(screen)
 
 def main():
     pg.init()
