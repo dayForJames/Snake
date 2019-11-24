@@ -135,7 +135,7 @@ def menu(screen):
         for event in pg.event.get():
             print(event)
             if event.type == pg.QUIT:
-                gameover = True
+                sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
                 #   Exit
                 if pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 300:
