@@ -131,11 +131,12 @@ def menu(screen):
     output_text_menu(screen)
     pg.display.flip()
     gameover = False
+    is_menu = False
     while not gameover:
         for event in pg.event.get():
             print(event)
             if event.type == pg.QUIT:
-                sys.exit()
+                gameover = True
             if event.type == pg.MOUSEBUTTONDOWN:
                 #   Exit
                 if pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 300:
@@ -156,7 +157,12 @@ def menu(screen):
                 #   Back to menu
                 elif pg.mouse.get_pos()[0] >= width - size_rec and pg.mouse.get_pos()[1] >= 0:
                     if pg.mouse.get_pos()[0] <= width and pg.mouse.get_pos()[1] <= height - size_rec:
-                        menu(screen)
+                        is_menu = True
+                        break
+        if is_menu is True:
+            break
+    if is_menu is True:
+        menu(screen)
 
 def main():
     pg.init()
