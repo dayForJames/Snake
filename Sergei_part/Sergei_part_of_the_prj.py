@@ -93,6 +93,9 @@ def settings(screen):
     screen.blit(font.render(data, False, color), (width - size_rec * 3 - width // 100, 0))
     pg.draw.rect(screen, (0, 100, 140), (width - size_rec, 0, size_rec, size_rec))
 
+    #   Dark theme
+
+
     pg.display.flip()
 
 #   For text on each button
@@ -132,6 +135,7 @@ def menu(screen):
     pg.display.flip()
     gameover = False
     is_menu = False
+    click = True
     while not gameover:
         for event in pg.event.get():
             print(event)
@@ -141,23 +145,32 @@ def menu(screen):
                 #   Exit
                 if pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 300:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 370:
-                        sys.exit()
+                        if click is True:
+                            click = False
+                            sys.exit()
                 #   Settings
                 elif pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 230:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 280:
-                        settings(screen)
+                        if click is True:
+                            click = False
+                            settings(screen)
                 #   Info
                 elif pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 160:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 210:
-                        about_us(screen)
+                        if click is True:
+                            click = False
+                            about_us(screen)
                 #   Game
                 elif pg.mouse.get_pos()[0] >= width // 2 - width // 10 and pg.mouse.get_pos()[1] >= 90:
                     if pg.mouse.get_pos()[0] <= width // 2 + width // 10 and pg.mouse.get_pos()[1] <= 140:
-                        startGame(screen)
+                        if click is True:
+                            click = False
+                            startGame(screen)
                 #   Back to menu
                 elif pg.mouse.get_pos()[0] >= width - size_rec and pg.mouse.get_pos()[1] >= 0:
                     if pg.mouse.get_pos()[0] <= width and pg.mouse.get_pos()[1] <= height - size_rec:
                         is_menu = True
+                        click = True
                         break
         if is_menu is True:
             break
