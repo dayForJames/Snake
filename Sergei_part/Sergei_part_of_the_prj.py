@@ -8,7 +8,7 @@ size = width, height = 500, 500
 border_size = 10
 color = 180, 212, 101
 border_color = 99, 136, 64
-size_rec = 25
+size_rec = 20
 
 #   Game functions of its rules
 
@@ -38,27 +38,103 @@ class Food(object):
         if x_pos_food is None:
             x_pos_food, y_pos_food = random_position()
             food_color = (215, 54, 48)
-        self.x_pos_food, self.y_pos_food, self.color = x_pos_food, y_pos_food, food_color
+            self.x_pos_food, self.y_pos_food, self.color = x_pos_food, y_pos_food, food_color
 
     def draw_food(self, game_surface):
         pg.draw.rect(game_surface, self.color, (self.x_pos_food, self.y_pos_food, size_rec, size_rec), 0)
+
+#   Snake
+
+# Set the width and height of each snake segment
+segment_width = size_rec
+segment_height = size_rec
+
+class Segment(pg.sprite.Sprite):
+    """ Class to represent one segment of the snake. """
+    # -- Methods
+    # Constructor function
+    def __init__(self, x, y):
+        # Call the parent's constructor
+        super().__init__()
+
+        # Set height, width
+        self.image = pg.Surface([segment_width, segment_height])
+        self.image.fill((31, 89, 207))
+
+        # Make our top-left corner the passed-in location.
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 #   Functions of menu buttons
 #   Main game (Snake)
 
 def startGame(screen):
     pg.display.set_caption('Snake')
+    # Margin between each segment
+    segment_margin = 0
+
+    # Set initial speed
+    x_change = segment_width + segment_margin
+    y_change = 0
+    allspriteslist = pg.sprite.Group()
+    # Create an initial snake
+    snake_segments = []
+    for i in range(4):
+        x = 260 - (segment_width + segment_margin) * i
+        y = size_rec
+        segment = Segment(x, y)
+        snake_segments.append(segment)
+        allspriteslist.add(segment)
+
+    clock = pg.time.Clock()
     meal = Food()
     gameover = False
     while not gameover:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 gameover = True
+        # Set the speed based on the key pressed
+        # We want the speed to be enough that we move a full
+        # segment, plus the margin.
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_a:
+                    x_change = (segment_width + segment_margin) * -1
+                    y_change = 0
+                if event.key == pg.K_d:
+                    x_change = (segment_width + segment_margin)
+                    y_change = 0
+                if event.key == pg.K_w:
+                    x_change = 0
+                    y_change = (segment_height + segment_margin) * -1
+                if event.key == pg.K_s:
+                    x_change = 0
+                    y_change = (segment_height + segment_margin)
+        old_segment = snake_segments.pop()
+        allspriteslist.remove(old_segment)
+
+        # Figure out where new segment will be
+        x = snake_segments[0].rect.x + x_change
+        y = snake_segments[0].rect.y + y_change
+        segment = Segment(x, y)
+
+        # Insert new segment into the list
+        snake_segments.insert(0, segment)
+        allspriteslist.add(segment)
+
+        # -- Draw everything
+        # Clear screen
         screen.fill(color)
         create_border(screen)
+        if snake_segments[0].rect.x == meal.x_pos_food and snake_segments[0].rect.y == meal.y_pos_food:
+            meal = Food()
+            snake_segments.insert(0, segment)
+            allspriteslist.add(segment)
         meal.draw_food(screen)
+        allspriteslist.draw(screen)
         pg.display.flip()
-        pg.time.wait(10)
+        # Pause
+        clock.tick(5)
     sys.exit()
 
 #   For button 'About Us'
