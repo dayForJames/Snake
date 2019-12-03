@@ -90,6 +90,8 @@ def startGame(screen):
     clock = pg.time.Clock()
     meal = Food()
     gameover = False
+    is_failed = False
+    right, left, top, bottom = False, False, False, False
     while not gameover:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -97,44 +99,70 @@ def startGame(screen):
         # Set the speed based on the key pressed
         # We want the speed to be enough that we move a full
         # segment, plus the margin.
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_a:
+            if event.type == pg.KEYDOWN and not is_failed:
+                if event.key == pg.K_a and not right:
+                    left = True
+                    top, bottom = False, False
                     x_change = (segment_width + segment_margin) * -1
                     y_change = 0
-                if event.key == pg.K_d:
+                if event.key == pg.K_d and not left:
+                    right = True
+                    top, bottom = False, False
                     x_change = (segment_width + segment_margin)
                     y_change = 0
-                if event.key == pg.K_w:
+                if event.key == pg.K_w and not bottom:
+                    top = True
+                    right, left = False, False
                     x_change = 0
                     y_change = (segment_height + segment_margin) * -1
-                if event.key == pg.K_s:
+                if event.key == pg.K_s and not top:
+                    bottom = True
+                    right, left = False, False
                     x_change = 0
                     y_change = (segment_height + segment_margin)
-        old_segment = snake_segments.pop()
-        allspriteslist.remove(old_segment)
+        if not is_failed:
+            old_segment = snake_segments.pop()
+            allspriteslist.remove(old_segment)
 
-        # Figure out where new segment will be
-        x = snake_segments[0].rect.x + x_change
-        y = snake_segments[0].rect.y + y_change
-        segment = Segment(x, y)
+            # Figure out where new segment will be
 
-        # Insert new segment into the list
-        snake_segments.insert(0, segment)
-        allspriteslist.add(segment)
+            x = snake_segments[0].rect.x + x_change
+            y = snake_segments[0].rect.y + y_change
+            segment = Segment(x, y)
 
-        # -- Draw everything
-        # Clear screen
-        screen.fill(color)
-        create_border(screen)
+            # Insert new segment into the list
+
+            snake_segments.insert(0, segment)
+            allspriteslist.add(segment)
+
+            # -- Draw everything
+            # Clear screen
+
+            screen.fill(color)
+            create_border(screen)
+
+        #   Checking
+
         if snake_segments[0].rect.x == meal.x_pos_food and snake_segments[0].rect.y == meal.y_pos_food:
             meal = Food()
             snake_segments.insert(0, segment)
             allspriteslist.add(segment)
+        if snake_segments[0].rect.x > width - size_rec * 2 or snake_segments[0].rect.x < size_rec or snake_segments[0].rect.y > height - size_rec * 2 or snake_segments[0].rect.y < size_rec:
+            is_failed = True
+        for i in range(2, len(snake_segments)):
+            if snake_segments[i].rect.x == snake_segments[0].rect.x and snake_segments[i].rect.y == snake_segments[0].rect.y:
+                is_failed = True
         meal.draw_food(screen)
         allspriteslist.draw(screen)
         pg.display.flip()
+
         # Pause
+
         clock.tick(5)
+        if is_failed is True:
+            data = 'You lost your snake'
+            font = pg.font.Font('8201.ttf', 23)
+            screen.blit(font.render(data, False, color), (50, 0))
     sys.exit()
 
 #   For button 'About Us'
@@ -150,7 +178,7 @@ def about_us(screen):
     data = 'Developed by:', 'Sergei', 'Petr', 'Mark', 'Menu'
     font = pg.font.Font('8201.ttf', 23)
     count = 0
-    screen.blit(font.render(data[4], False, color), (width - size_rec * 3 - width // 100, 0))
+    screen.blit(font.render(data[4], False, color), (width - size_rec * 4, 0))
     for i in range(4):
         screen.blit(font.render(data[i], False, border_color), (width // 2 - width // 10, 100 + count))
         count += 70
@@ -166,7 +194,7 @@ def settings(screen):
     #   Menu button
     font = pg.font.Font('8201.ttf', 23)
     data = 'Menu'
-    screen.blit(font.render(data, False, color), (width - size_rec * 3 - width // 100, 0))
+    screen.blit(font.render(data, False, color), (width - size_rec * 4, 0))
     pg.draw.rect(screen, (0, 100, 140), (width - size_rec, 0, size_rec, size_rec))
 
     #   Dark theme
@@ -183,7 +211,7 @@ def output_text_menu(screen):
     screen.blit(font.render(data[1], False, color), (width // 2 - width // 10 + 5, 170))
     screen.blit(font.render(data[2], False, color), (width // 2 - width // 10 + 15, 243))
     screen.blit(font.render(data[3], False, color), (width // 2 - width // 10 + 28, 313))
-    screen.blit(font.render(data[4], False, color), (width - size_rec * 3 - width // 100, 0))
+    screen.blit(font.render(data[4], False, color), (width - size_rec * 4, 0))
 
 #   Menu
 
